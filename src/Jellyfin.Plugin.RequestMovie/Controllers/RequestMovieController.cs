@@ -152,10 +152,7 @@ public sealed class RequestMovieController(RequestStore store, LibraryChecks lib
 		}
 		if (string.IsNullOrWhiteSpace(input.ImdbId) && !string.IsNullOrWhiteSpace(input.TmdbId))
 		{
-			NewRequest newRequest = input with { };
-			NewRequest newRequest2 = newRequest;
-			newRequest2.ImdbId = await FindImdbIdAsync(kind, input.TmdbId, HttpContext.RequestAborted);
-			input = newRequest;
+			input = input with { ImdbId = await FindImdbIdAsync(kind, input.TmdbId, HttpContext.RequestAborted) };
 		}
 		BaseItem val = library.Match(input);
 		if (val != null)
@@ -211,10 +208,7 @@ public sealed class RequestMovieController(RequestStore store, LibraryChecks lib
 		}
 		if (string.IsNullOrWhiteSpace(input.ImdbId) && !string.IsNullOrWhiteSpace(input.TmdbId))
 		{
-			NewRequest newRequest = input with { };
-			NewRequest newRequest2 = newRequest;
-			newRequest2.ImdbId = await FindImdbIdAsync(input.Kind, input.TmdbId, HttpContext.RequestAborted);
-			input = newRequest;
+			input = input with { ImdbId = await FindImdbIdAsync(input.Kind, input.TmdbId, HttpContext.RequestAborted) };
 		}
 		if (library.Exists(input))
 		{
