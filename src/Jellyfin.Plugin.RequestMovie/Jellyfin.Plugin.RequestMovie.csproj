@@ -3,7 +3,7 @@
 <ItemGroup><PackageReference Include="Jellyfin.Controller" Version="12.4.0" ExcludeAssets="runtime"/><PackageReference Include="Jellyfin.Model" Version="12.4.0" ExcludeAssets="runtime"/></ItemGroup>
 <ItemGroup>
  <EmbeddedResource Include="Configuration/configPage.html"/>
- <EmbeddedResource Include="Configuration/requestMoviePage.html"/>
+ <EmbeddedResource Include="../../custom-tab.html" Link="Configuration/requestMoviePage.html" LogicalName="Jellyfin.Plugin.RequestMovie.Configuration.requestMoviePage.html"/>
  <EmbeddedResource Include="../../custom-tab.html" Link="Client/requestMovieUi.html" LogicalName="Jellyfin.Plugin.RequestMovie.Client.requestMovieUi.html"/>
  <EmbeddedResource Include="Client/requestMovieNav.js"/>
 </ItemGroup>
