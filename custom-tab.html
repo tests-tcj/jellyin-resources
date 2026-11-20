@@ -1,0 +1,329 @@
+<div id="requestMovieApp" class="rm-app">
+<style>
+#requestMovieApp{--rm-bg:#141c2a;--rm-card:#1c2738;--rm-line:#324257;--rm-text:#eff4fa;--rm-muted:#a5b3c9;--rm-accent:#8d6bff;max-width:1120px;margin:18px auto;padding:12px 16px;color:var(--rm-text);font:inherit}
+#requestMovieApp *{box-sizing:border-box}
+#requestMovieApp .rm-hero{border-radius:20px;padding:30px;background:linear-gradient(115deg,#302252,#162c41 62%,#142235);border:1px solid #4c4376;margin-bottom:18px}
+#requestMovieApp h2{font-size:clamp(1.4rem,3vw,2rem);margin:0 0 10px;color:#fff}
+#requestMovieApp h3{margin:0;color:#fff;font-size:1.18rem}
+#requestMovieApp p{color:var(--rm-muted);line-height:1.5;margin:5px 0}
+#requestMovieApp .rm-search{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+#requestMovieApp input,#requestMovieApp select{background:#172335;border:1px solid #53617b;color:#fff;border-radius:10px;padding:11px;font:inherit;min-width:0}
+#requestMovieApp #rmQuery{flex:1 1 270px}
+#requestMovieApp button{background:var(--rm-accent);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:650;cursor:pointer}
+#requestMovieApp button:disabled{opacity:.55;cursor:default}
+#requestMovieApp button.rm-ghost{background:#303d54;color:#e5ecf6}
+#requestMovieApp .rm-section{background:var(--rm-bg);border:1px solid var(--rm-line);border-radius:18px;padding:22px;margin-bottom:18px}
+#requestMovieApp .rm-heading{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+#requestMovieApp .rm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+#requestMovieApp .rm-card{background:var(--rm-card);border:1px solid var(--rm-line);border-radius:13px;display:flex;gap:13px;padding:12px;min-width:0}
+#requestMovieApp .rm-poster{width:82px;height:122px;object-fit:cover;flex-shrink:0;background:#29374c;border-radius:8px}
+#requestMovieApp .rm-info{min-width:0;flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:7px}
+#requestMovieApp .rm-title{font-size:1rem;font-weight:700;color:#fff;overflow-wrap:anywhere}
+#requestMovieApp .rm-meta{font-size:.8rem;color:var(--rm-muted)}
+#requestMovieApp .rm-desc{font-size:.85rem;line-height:1.42;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+#requestMovieApp .rm-pill{display:inline-block;border-radius:8px;background:#38455c;padding:5px 9px;font-size:.78rem;color:#d5e1f3}
+#requestMovieApp .rm-pill.available{background:#183d38;color:#95efd1}
+#requestMovieApp .rm-pill.approved{background:#183c59;color:#8fd6ff}
+#requestMovieApp .rm-pill.pending{background:#41321e;color:#ffe0a1}
+#requestMovieApp .rm-actions{display:flex;align-items:center;gap:8px;margin-top:auto;flex-wrap:wrap}
+#requestMovieApp .rm-actions button{padding:8px 12px;font-size:.86rem}
+#requestMovieApp .rm-actions .rm-watch{background:#176e58;color:#fff;border-radius:9px;padding:8px 12px;text-decoration:none;font-size:.86rem;font-weight:650}
+#requestMovieApp .rm-actions .rm-delete{background:#633040;color:#ffdbe2;border:1px solid #9b5263;font-size:.86rem}
+#requestMovieApp .rm-filter{display:flex;gap:7px;flex-wrap:wrap}
+#requestMovieApp .rm-quick-search{display:flex;align-items:center;gap:8px;margin-top:14px}
+#requestMovieApp .rm-quick-search input{flex:1;min-width:0;width:100%}
+#requestMovieApp .rm-quick-search button{flex-shrink:0;padding:10px 14px}
+#requestMovieApp .rm-quick-search button[hidden]{display:none}
+#requestMovieApp .rm-filter button{background:#29374c;color:#d4dfec;padding:8px 13px}
+#requestMovieApp .rm-filter button[aria-pressed=true]{background:#7652d5;color:white}
+#requestMovieApp .rm-filter button[data-rm-filter="available"]{background:#173e34;color:#a7f2ce;border:1px solid #347f62}
+#requestMovieApp .rm-filter button[data-rm-filter="available"][aria-pressed="true"]{background:#23805c;color:white;border-color:#4db88a}
+#requestMovieApp .rm-filter button[data-rm-filter="active"]{background:#493718;color:#ffe2a0;border:1px solid #a17b32}
+#requestMovieApp .rm-filter button[data-rm-filter="active"][aria-pressed="true"]{background:#b98219;color:#111827;border-color:#e1b64c}
+#requestMovieApp .rm-note{min-height:24px;margin-top:13px;color:#c7d8ee}
+#requestMovieApp .rm-empty{padding:25px;text-align:center;color:var(--rm-muted);border:1px dashed var(--rm-line);border-radius:12px}
+#requestMovieApp{position:relative;min-height:320px}
+#requestMovieApp .rm-spinner{display:inline-block;width:23px;height:23px;flex-shrink:0;border:3px solid #51607b;border-top-color:#a78bfa;border-radius:50%;animation:rm-spin .85s linear infinite}
+#requestMovieApp .rm-loading{display:flex;align-items:center;justify-content:center;gap:12px;min-height:110px;color:#dbe4f4}
+#requestMovieApp .rm-page-loading{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;gap:14px;flex-direction:column;border-radius:18px;background:#141c2a;color:#eaf0fb;text-align:center}
+#requestMovieApp .rm-page-loading .rm-spinner{width:34px;height:34px;border-width:4px}
+#requestMovieApp .rm-page-loading[hidden]{display:none}
+@keyframes rm-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){#requestMovieApp .rm-spinner{animation:none}}
+@media(max-width:460px){#requestMovieApp{padding:5px}#requestMovieApp .rm-hero{padding:20px}#requestMovieApp .rm-section{padding:14px}}
+</style>
+<div id="rmPageLoading" class="rm-page-loading" role="status" aria-live="polite"><span class="rm-spinner" aria-hidden="true"></span><span>Se încarcă pagina de cereri...</span></div>
+<section class="rm-hero">
+<h2>🎬 Ce ai vrea să vezi?</h2>
+<p>Caută după nume, cod IMDb (tt...) sau ID TMDb. Verificăm automat dacă există deja în biblioteca Jellyfin sau în cereri.</p>
+<div class="rm-search">
+<select id="rmKind" aria-label="Tip media"><option value="movie">Filme</option><option value="series">Seriale</option></select>
+<input id="rmQuery" placeholder="Titlu, IMDb tt0133093 sau TMDb 603" maxlength="120" aria-label="Titlu"/>
+<button id="rmSearch">Caută</button>
+</div><div id="rmInfo" class="rm-note" role="status" aria-live="polite"></div>
+</section>
+<section class="rm-section" id="rmSearchSection" hidden>
+<div class="rm-heading"><h3>Rezultatele căutării</h3><span id="rmResultCount" class="rm-meta"></span></div>
+<div id="rmResults" class="rm-grid"></div></section>
+<section class="rm-section">
+<div class="rm-heading"><div><h3>📋 Cereri existente (<span id="rmExistingCount">…</span>)</h3><p>Cererile îndeplinite se mută automat în Disponibile.</p></div></div>
+<div class="rm-filter">
+<button type="button" data-rm-filter="available" aria-pressed="false">Disponibile (<span id="rmAvailableTabCount">0</span>)</button>
+<button type="button" data-rm-filter="active" aria-pressed="false">În așteptare (<span id="rmPendingTabCount">0</span>)</button>
+<button type="button" data-rm-filter="all" aria-pressed="true">Toate (<span id="rmAllTabCount">0</span>)</button>
+</div>
+<div class="rm-quick-search"><input type="search" id="rmQuickSearch" aria-label="Filtrează cererile existente" placeholder="Filtrare rapidă: titlu, an, IMDb, TMDb, solicitant..." autocomplete="off" spellcheck="false"><button type="button" id="rmClearQuickSearch" class="rm-ghost" aria-label="Șterge filtrarea" hidden>✕</button></div>
+<p id="rmCount" class="rm-note" role="status" aria-live="polite">Se încarcă cererile...</p><div id="rmRequests" class="rm-grid"><div class="rm-loading" role="status"><span class="rm-spinner" aria-hidden="true"></span> Se încarcă cererile existente...</div></div>
+</section>
+</div>
+<script>
+(()=>{
+const root=document.getElementById("requestMovieApp");
+if(!root||root.dataset.started)return;
+root.dataset.started="1";
+const $=id=>root.querySelector("#"+id);
+const api=window.ApiClient||window.Dashboard?.getCurrentApiClient?.();
+const apiUrl=path=>api?.getUrl?api.getUrl("RequestMovie/"+path):"/RequestMovie/"+path;
+let requests=[],filter="all",canDelete=false,adminActionEnabled=false,adminActionLabel="Deschide";
+let hasLoadedRequests=false,reloadPromise=null,lastEditAt=0,searchInProgress=false,renderPending=false;
+const pick=(obj,...keys)=>{for(const key of keys)if(obj?.[key]!==undefined&&obj?.[key]!==null)return obj[key];return null};
+const text=(tag,value,cls)=>{const e=document.createElement(tag);e.textContent=String(value??"");if(cls)e.className=cls;return e};
+const pill=(value,cls)=>text("span",value,"rm-pill "+(cls||""));
+const messages={pending:"În așteptare",approved:"Aprobat",rejected:"Respins",available:"Disponibil"};
+function jellyfinLink(id){
+ const value=String(id||"").replace(/-/g,"");
+ if(!/^[a-f0-9]{32}$/i.test(value))return null;
+ const url=new URL(window.location.href);
+ url.hash="#/details?id="+encodeURIComponent(value);
+ return url.href;
+}
+function watchButton(itemId){
+ const href=jellyfinLink(itemId);
+ if(!href)return null;
+ const link=text("a","▶ Vezi acum");
+ link.href=href;
+ link.className="rm-watch";
+ return link;
+}
+function mediaCard(entry,mode){
+ const title=pick(entry,"title","Title")||"Fără titlu";
+ const year=pick(entry,"year","Year");
+ const kind=pick(entry,"kind","Kind")||"movie";
+ const status=pick(entry,"status","Status")||"pending";
+ const poster=pick(entry,"poster","Poster");
+ const card=text("article","","rm-card");
+ if(poster&&/^https:\/\/image\.tmdb\.org\/t\/p\//.test(poster)){
+  const img=document.createElement("img");img.className="rm-poster";img.src=poster;img.alt="";img.loading="lazy";card.append(img)
+ }else card.append(text("div","🎞️","rm-poster"));
+ const info=text("div","","rm-info");
+ info.append(text("div",title,"rm-title"),text("div",(kind==="series"?"Serial":"Film")+(year?" · "+year:""),"rm-meta"));
+ if(mode==="request"){
+  info.append(pill(messages[status]||status,status));
+  const imdbId=pick(entry,"imdbId","ImdbId");
+  const tmdbId=pick(entry,"tmdbId","TmdbId");
+  info.append(text("div","IMDb: "+(imdbId||"—")+" · TMDb: "+(tmdbId||"—"),"rm-meta"));
+  info.append(text("div","Solicitat de "+(pick(entry,"requestedBy","RequestedBy")||"Necunoscut"),"rm-meta"));
+  const actions=text("div","","rm-actions");info.append(actions);
+  if(status==="available"){
+   const link=watchButton(pick(entry,"jellyfinItemId","JellyfinItemId"));
+   if(link)actions.append(link);
+  }
+  if(canDelete){
+   const id=pick(entry,"id","Id");
+   if(id&&adminActionEnabled&&kind==="movie"&&status==="pending"){
+    const action=text("button",adminActionLabel,"rm-admin-action");
+    action.type="button";
+    action.setAttribute("aria-label",adminActionLabel+": "+title);
+    action.onclick=async()=>{
+     // Open synchronously so browsers do not block the new tab after API call.
+     const destination=window.open("about:blank","_blank");
+     action.disabled=true;
+     try{
+      const result=await call("Admin/Action/"+encodeURIComponent(id)+"/Url");
+      const url=pick(result,"url","Url");
+      const parsed=new URL(url);
+      if(!["http:","https:"].includes(parsed.protocol))throw Error("URL-ul trebuie sa foloseasca HTTP sau HTTPS.");
+      if(destination){destination.opener=null;destination.location.href=parsed.href}
+      else window.location.assign(parsed.href);
+     }catch(e){
+      if(destination)destination.close();
+      window.alert("Nu s-a putut deschide linkul: "+e.message);
+     }finally{action.disabled=false}
+    };
+    actions.append(action);
+   }
+   if(id){
+    const button=text("button","Șterge","rm-delete");
+    button.type="button";
+    button.setAttribute("aria-label","Șterge cererea: "+title);
+    button.onclick=async()=>{
+     if(!window.confirm("Ștergi definitiv cererea pentru \""+title+"\"?"))return;
+     button.disabled=true;
+     try{
+      await call("Requests/"+encodeURIComponent(id),"DELETE");
+      requests=requests.filter(x=>pick(x,"id","Id")!==id);
+      render();
+     }catch(e){window.alert("Nu s-a putut șterge cererea: "+e.message);button.disabled=false;}
+    };
+    actions.append(button);
+   }
+  }
+ }else{
+  if(entry.overview)info.append(text("p",entry.overview,"rm-desc"));
+  const actions=text("div","","rm-actions");actions.append(pill("Verificare..."));info.append(actions);
+  const params=new URLSearchParams({title,kind,year:year||"",tmdbId:entry.tmdbId||"",imdbId:entry.imdbId||""});
+  call("Check?"+params).then(result=>{
+   actions.replaceChildren();
+   if(result.state==="available"){
+    actions.append(pill("✓ În bibliotecă","available"));
+    const link=watchButton(pick(result,"jellyfinItemId","JellyfinItemId"));
+    if(link)actions.append(link);
+   }
+   else if(result.state==="requested")actions.append(pill("✓ Deja solicitat","approved"));
+   else{
+    const b=text("button","Solicită");actions.append(b);
+    b.onclick=async()=>{
+     b.disabled=true;b.textContent="Se trimite...";
+     try{await call("Requests","POST",{title,kind,year,tmdbId:entry.tmdbId,imdbId:entry.imdbId,poster:entry.poster});
+      actions.replaceChildren(pill("✓ Cerere înregistrată","approved"));await reload();
+     }catch(e){actions.replaceChildren(pill(e.message));}
+    };
+   }
+  }).catch(e=>actions.replaceChildren(pill(e.message)));
+ }
+ card.append(info);return card;
+}
+async function call(path,method="GET",body=null){
+ const token=api?.accessToken?.()||api?._serverInfo?.AccessToken;
+ if(!token)throw Error("Autentificare Jellyfin indisponibilă");
+ const res=await fetch(apiUrl(path),{method,headers:{
+  Authorization:'MediaBrowser Client="RequestMovie", Device="Web", DeviceId="request-movie-web", Version="0.2", Token="'+token+'"',
+  ...(body?{"Content-Type":"application/json"}:{})
+ },body:body?JSON.stringify(body):undefined,cache:"no-store"});
+ let data=null;try{data=await res.json()}catch{}
+ if(!res.ok)throw Error(data?.error||data?.Error||"Eroare HTTP "+res.status);
+ return data;
+}
+function isEditing(){
+ const focused=document.activeElement;
+ return !!(focused&&root.contains(focused)&&(focused.matches("input,textarea,select,[contenteditable]")))||
+        Date.now()-lastEditAt<8000;
+}
+function isVisible(){
+ if(document.hidden||!root.isConnected)return false;
+ const overlay=root.closest("#request-movie-native");
+ return !overlay?.hidden&&root.getClientRects().length>0;
+}
+root.addEventListener("input",()=>{lastEditAt=Date.now()},{capture:true});
+root.addEventListener("change",()=>{lastEditAt=Date.now()},{capture:true});
+function normalizeQuickSearch(value){
+ // Normalize case and Romanian accents without deleting letters or digits.
+ // Treat % and * as wildcard separators; a match can be a fragment anywhere.
+ return String(value??"").normalize("NFD")
+  .replace(/[\u0300-\u036f]/g,"")
+  .toLocaleLowerCase("ro")
+  .replace(/[%*?.,:;_(){}\[\]\/\\|!+\-]+/g," ")
+  .replace(/\s+/g," ").trim();
+}
+function matchesQuickSearch(entry,query){
+ const normalized=normalizeQuickSearch(query);
+ if(!normalized)return true;
+ const imdb=pick(entry,"imdbId","ImdbId");
+ const tmdb=pick(entry,"tmdbId","TmdbId");
+ const fields=[
+  pick(entry,"title","Title"),
+  pick(entry,"year","Year"),
+  imdb?"imdb "+imdb:"",
+  tmdb?"tmdb "+tmdb:"",
+  pick(entry,"requestedBy","RequestedBy"),
+  pick(entry,"kind","Kind")
+ ];
+ const haystack=normalizeQuickSearch(fields.filter(v=>v!==null&&v!==undefined).join(" "));
+ // Each term matches as %term%; terms may appear in any order or field.
+ return normalized.split(" ").every(term=>haystack.includes(term));
+}
+function render(){
+ if(!hasLoadedRequests)return;
+ const available=requests.filter(r=>pick(r,"status","Status")==="available").length;
+ const pending=requests.filter(r=>pick(r,"status","Status")==="pending").length;
+ $("rmAvailableTabCount").textContent=String(available);
+ $("rmPendingTabCount").textContent=String(pending);
+ $("rmAllTabCount").textContent=String(requests.length);
+ $("rmExistingCount").textContent=String(requests.length);
+ const query=normalizeQuickSearch($("rmQuickSearch").value);
+ $("rmClearQuickSearch").hidden=!query;
+ const visible=requests.filter(r=>{
+  const status=pick(r,"status","Status");
+  const matchesTab=filter==="all"||(filter==="available"?status==="available":status==="pending");
+  return matchesTab&&matchesQuickSearch(r,query);
+ });
+ $("rmCount").textContent=visible.length+" afișate"+(query?" · Filtrare rapidă activă":"")+" · Actualizare automată la 60 de secunde";
+ const parent=$("rmRequests");parent.replaceChildren();
+ if(!visible.length){parent.append(text("div",query?"Nicio cerere nu corespunde căutării.":"Nicio cerere în această categorie.","rm-empty"));return}
+ for(const item of visible)parent.append(mediaCard(item,"request"));
+}
+async function detectAdmin(){
+ try{
+  const data=await call("Admin/Capabilities");
+  canDelete=data.canDelete===true||data.CanDelete===true;
+  adminActionEnabled=canDelete&&(data.actionEnabled===true||data.ActionEnabled===true);
+  adminActionLabel=String(pick(data,"actionLabel","ActionLabel")||"Deschide").slice(0,60);
+ }catch{canDelete=false;adminActionEnabled=false;}
+}
+async function reload(background=false){
+ if(reloadPromise)return reloadPromise;
+ if(background&&(isEditing()||searchInProgress||!isVisible()))return;
+ if(background)$("rmCount").textContent="Se actualizează automat...";
+ else $("rmCount").textContent="Se încarcă cererile...";
+ reloadPromise=(async()=>{
+  try{
+   const data=await call("Requests");
+   requests=Array.isArray(data)?data:(data?.requests||data?.Requests||[]);
+   hasLoadedRequests=true;
+   if(background&&isEditing()){renderPending=true;return;}
+   renderPending=false;
+   render();
+  }catch(e){
+   hasLoadedRequests=true;
+   $("rmCount").textContent="Eroare la încărcarea cererilor: "+e.message;
+   if(!requests.length)$("rmRequests").replaceChildren(text("div","Nu s-au putut încărca cererile. Încearcă să redeschizi pagina.","rm-empty"));
+  }finally{
+   $("rmPageLoading").hidden=true;
+   reloadPromise=null;
+  }
+ })();
+ return reloadPromise;
+}
+const autoRefresh=setInterval(()=>{
+ if(!root.isConnected){clearInterval(autoRefresh);return;}
+ if(!isVisible()||searchInProgress||isEditing())return;
+ if(renderPending){renderPending=false;render();return}
+ reload(true);
+},60000);
+root.addEventListener("focusout",()=>{
+ if(renderPending)setTimeout(()=>{if(renderPending&&!isEditing()){renderPending=false;render()}},8200);
+});
+$("rmQuickSearch").addEventListener("input",()=>{render();});
+$("rmClearQuickSearch").addEventListener("click",()=>{$("rmQuickSearch").value="";render();$("rmQuickSearch").focus();});
+root.querySelectorAll("[data-rm-filter]").forEach(button=>button.addEventListener("click",()=>{
+ filter=button.dataset.rmFilter;root.querySelectorAll("[data-rm-filter]").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));render()
+}));
+$("rmSearch").onclick=async()=>{
+ const query=$("rmQuery").value.trim(),kind=$("rmKind").value;
+ if(query.length<2 && !/^[0-9]$/.test(query)){$("rmInfo").textContent="Introdu un titlu, cod IMDb (tt...) sau ID TMDb.";return}
+ searchInProgress=true;
+ $("rmSearch").disabled=true;$("rmInfo").textContent="Se caută...";
+ $("rmSearchSection").hidden=false;$("rmResults").replaceChildren();
+ try{
+  const data=await call("Search?"+new URLSearchParams({query,kind}));
+  const list=Array.isArray(data)?data:[];
+  $("rmResultCount").textContent=list.length+" rezultate";
+  $("rmInfo").textContent=list.length?"Selectează un titlu care nu este încă disponibil.":"Niciun rezultat găsit.";
+  for(const entry of list)$("rmResults").append(mediaCard(entry,"result"));
+ }catch(e){$("rmInfo").textContent=e.message}
+ finally{searchInProgress=false;$("rmSearch").disabled=false}
+};
+$("rmQuery").addEventListener("keydown",e=>{if(e.key==="Enter")$("rmSearch").click()});
+detectAdmin().then(()=>reload());
+})();
+</script>
