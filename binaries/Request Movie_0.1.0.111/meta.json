@@ -1,0 +1,16 @@
+{
+  "category":"General",
+  "changelog":"Test release for Jellyfin 12.4",
+  "description":"",
+  "guid":"f8517621-7c60-4e19-9696-67f9b31fa092",
+  "name":"Request Movie",
+  "overview":"Search TMDb and submit requests for missing media.",
+  "owner":"lucki91",
+  "targetAbi":"12.4.0.0",
+  "timestamp":"2026-11-17T07:22:27.0000000Z",
+  "version":"0.1.0.111",
+  "status":"Active",
+  "autoUpdate":true,
+  "imagePath":"",
+  "assemblies":[]
+}
