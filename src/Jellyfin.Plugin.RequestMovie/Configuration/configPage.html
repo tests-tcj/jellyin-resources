@@ -1,0 +1,42 @@
+<!doctype html><html><head><title>Request Movie</title></head><body>
+<div id="RequestMovieConfigPage" data-role="page" class="page type-interior pluginConfigurationPage">
+ <div data-role="content"><h2>Request Movie</h2>
+ <form id="RequestMovieConfigForm">
+ <div class="inputContainer"><label for="RequestMovieTmdbKey">TMDb API key</label><input is="emby-input" id="RequestMovieTmdbKey" type="password" autocomplete="off"></div>
+ <label><input is="emby-checkbox" type="checkbox" id="RequestMovieAllow">Permite cereri</label>
+ <div class="inputContainer"><label for="RequestMovieSearchLimit">Cautari per utilizator per ora</label><input is="emby-input" type="number" min="1" max="200" id="RequestMovieSearchLimit"></div>
+ <h3>Sincronizare TV</h3><label><input is="emby-checkbox" type="checkbox" id="RequestMovieTvEnabled">Biblioteca de cereri TV</label>
+ <div class="inputContainer"><label for="RequestMovieTvPath">Folder biblioteca TV</label><input is="emby-input" id="RequestMovieTvPath" type="text"></div>
+ <h3>Actiune administrator</h3><div class="inputContainer"><label for="RequestMovieAdminActionLabel">Text buton</label><input is="emby-input" id="RequestMovieAdminActionLabel" type="text"></div>
+ <div class="inputContainer"><label for="RequestMovieAdminActionUrl">URL cu parametri</label><input is="emby-input" id="RequestMovieAdminActionUrl" type="text"></div>
+ <button is="emby-button" type="submit" class="raised button-submit block emby-button">Salveaza</button>
+ </form></div>
+ <script>(function(){
+ const id="f8517621-7c60-4e19-9696-67f9b31fa092",page=document.querySelector("#RequestMovieConfigPage");
+ if(!page)return;
+ page.addEventListener("pageshow",function(){
+  Dashboard.showLoadingMsg();ApiClient.getPluginConfiguration(id).then(function(c){
+   page.querySelector("#RequestMovieTmdbKey").value=c.TmdbApiKey||"";
+   page.querySelector("#RequestMovieAllow").checked=c.AllowRequests!==false;
+   page.querySelector("#RequestMovieSearchLimit").value=c.SearchesPerUserPerHour||30;
+   page.querySelector("#RequestMovieTvEnabled").checked=c.EnableTvRequestLibrary===true;
+   page.querySelector("#RequestMovieTvPath").value=c.TvRequestLibraryPath||"";
+   page.querySelector("#RequestMovieAdminActionLabel").value=c.AdminActionButtonLabel||"Deschide";
+   page.querySelector("#RequestMovieAdminActionUrl").value=c.AdminActionUrlTemplate||"";
+   Dashboard.hideLoadingMsg();
+  }).catch(()=>Dashboard.hideLoadingMsg());
+ });
+ page.querySelector("#RequestMovieConfigForm").addEventListener("submit",function(e){
+  e.preventDefault();Dashboard.showLoadingMsg();
+  ApiClient.getPluginConfiguration(id).then(function(c){
+   c.TmdbApiKey=page.querySelector("#RequestMovieTmdbKey").value;
+   c.AllowRequests=page.querySelector("#RequestMovieAllow").checked;
+   c.SearchesPerUserPerHour=Math.max(1,Math.min(200,Number(page.querySelector("#RequestMovieSearchLimit").value)||30));
+   c.EnableTvRequestLibrary=page.querySelector("#RequestMovieTvEnabled").checked;
+   c.TvRequestLibraryPath=page.querySelector("#RequestMovieTvPath").value.trim();
+   c.AdminActionButtonLabel=page.querySelector("#RequestMovieAdminActionLabel").value.trim()||"Deschide";
+   c.AdminActionUrlTemplate=page.querySelector("#RequestMovieAdminActionUrl").value.trim();
+   return ApiClient.updatePluginConfiguration(id,c);
+  }).then(Dashboard.processPluginConfigurationUpdateResult).catch(e=>{console.error(e);Dashboard.hideLoadingMsg()});
+ });
+ })();</script></div></body></html>
