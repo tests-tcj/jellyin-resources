@@ -1,32 +1,42 @@
-# Jellyfin resources — plugin recovery
+# Jellyfin plugins — recovered from installed server
 
-Repository for recovering two Jellyfin 12.4 plugins from the owner's server after losing access to an older GitHub account.
+**Public recovery repository:** source and recovered binaries for Jellyfin 12.4.
 
-| Plugin | Installed version | Plugin GUID |
-| --- | --- | --- |
-| Request Movie | 0.1.0.111 | `f8517621-7c60-4e19-9696-67f9b31fa092` |
-| NFO Trailer | 0.1.0.10 | `e30f17c1-cd72-4bdc-8225-38d122947719` |
+| Plugin | Original installed version | GUID | Reconstructed source |
+|---|---|---|---|
+| Request Movie | 0.1.0.111 | `f8517621-7c60-4e19-9696-67f9b31fa092` | `src/Jellyfin.Plugin.RequestMovie/` |
+| NFO Trailer | 0.1.0.10 | `e30f17c1-cd72-4bdc-8225-38d122947719` | `src/Jellyfin.Plugin.Trailer/` |
 
-## What is preserved
+## Recovery sources
 
-The recovery archive contains both original DLLs and plugin metadata. Embedded JS/HTML assets were also extracted. **Original C# source code was not included in the installed plugin directories**, so a buildable project still requires decompilation and reconstruction.
+- `binaries/`: the exact DLLs recovered from the Jellyfin server (original behavior/reference).
+- `src/`: separate, compilable .NET 10 projects reconstructed from project history and recovered resources. **Do not assume the C# implementation is byte-for-byte identical to the original binaries.**
+- `custom-tab.html`, `Client/*.js`, `Configuration/*.html`: original UI resources recovered from DLLs.
+- `reference-decompiled/`: automatically generated ILSpy source reference, when decompilation workflow succeeds.
+- `.github/workflows/build.yml`: builds both plugins independently and saves ZIP artifacts.
+- `.github/workflows/decompile.yml`: extracts C# code from the original DLLs for deeper comparison.
 
-To avoid accidental exposure, the private recovery archive, binary DLLs, and Jellyfin configuration are **not uploaded automatically to this public repository**.
+## Build
 
-## Import the server archive
+Run the GitHub Actions workflow **Build recovered Jellyfin plugins**, or locally:
 
 ```bash
-python3 scripts/import_recovery.py jellyfin-recovery.tar.gz --output recovered
+dotnet build src/Jellyfin.Plugin.RequestMovie/Jellyfin.Plugin.RequestMovie.csproj -c Release
+dotnet build src/Jellyfin.Plugin.Trailer/Jellyfin.Plugin.Trailer.csproj -c Release
 ```
 
-This creates an offline copy in `recovered/` (ignored by Git). Review it before selecting files for publication.
+Outputs are `Jellyfin.Plugin.RequestMovie.dll` and `Jellyfin.Plugin.Trailer.dll`.
 
-## Rebuild plan
+**Important:** reconstructed code has not yet been tested against the owner's active Jellyfin server. Do not replace the existing installed DLLs or delete the original data until functionality and persisted-request compatibility have been verified. The old configuration and stored requests are NOT included in the recovery archive.
 
-1. Preserve the original binaries and verify SHA-256 hashes.
-2. Decompile both DLLs with ILSpy to recreate C# code.
-3. Restore two separate .NET 10 plugin projects targeting Jellyfin 12.4.
-4. Test API endpoints, frontend injection, NFO parsing, and plugin startup.
-5. Publish independently versioned binary ZIPs and maintain the plugin catalog only after successful builds.
+## Original functionality targeted
 
-**Public repository:** do not commit Jellyfin access tokens, TMDb API keys, requests database, or other sensitive server data.
+Request Movie: title/IMDb/TMDb searches, duplicate checks, request lifecycle/status, admin actions, auto-reconciliation, optional TV placeholders, Jellyfin web navigation and embedded request form.
+
+NFO Trailer: read YouTube IDs from movie NFO, show the modal trailer on a movie details page, support SPA re-navigation and TV remote Back where the client loads the injected UI. Native Samsung Tizen may require a separately modified WGT client.
+
+## Security
+
+This is a PUBLIC repository. Never commit TMDb API keys, Jellyfin authentication tokens, server configuration, or user-request databases.
+
+The preserved DLLs are source recovery artifacts, **not** replacements for a correctly tested rebuilt plugin release.
