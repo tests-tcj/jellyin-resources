@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html><head><title>Request Movie</title></head><body>
+<div id="RequestMovieConfigPage" data-role="page" class="page type-interior pluginConfigurationPage">
+<div data-role="content"><h2>Request Movie</h2>
+<form id="RequestMovieConfigForm">
+<div class="inputContainer"><label class="inputLabel" for="RequestMovieTmdbKey">TMDb API key</label>
+<input is="emby-input" id="RequestMovieTmdbKey" type="password" autocomplete="off"></div>
+<div class="checkboxContainer checkboxContainer-withDescription">
+<label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="RequestMovieAllow">
+<span>Permite cereri</span></label></div>
+<div class="inputContainer"><label class="inputLabel" for="RequestMovieSearchLimit">Numar maxim de cautari TMDb / utilizator / ora (1-200)</label>
+<input is="emby-input" id="RequestMovieSearchLimit" type="number" min="1" max="200" value="30"></div>
+<h3>Afisare cereri pe Samsung TV (optional)</h3>
+<div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="RequestMovieTvEnabled"><span>Sincronizeaza cererile de filme intr-o biblioteca Jellyfin pentru TV</span></label></div>
+<div class="inputContainer"><label class="inputLabel" for="RequestMovieTvPath">Calea absoluta a folderului folosit de biblioteca Cereri filme (existent, cu permisiuni de scriere)</label><input is="emby-input" id="RequestMovieTvPath" type="text" placeholder="/srv/jellyfin/request-movies" autocomplete="off"></div>
+<p>IMPORTANT: Creeaza folderul pe server, adauga-l in Jellyfin Dashboard &gt; Libraries ca biblioteca de tip Movies si abia apoi activeaza sincronizarea. Se genereaza doar filme placeholder .disc, care NU pot fi redate. Serialele nu sunt incluse. La indeplinirea sau stergerea cererii, placeholderul creat de plugin este eliminat la urmatoarea sincronizare.</p>
+<h3>Buton personalizat administrator (filme in asteptare)</h3>
+<div class="inputContainer"><label class="inputLabel" for="RequestMovieAdminActionLabel">Textul butonului</label>
+<input is="emby-input" id="RequestMovieAdminActionLabel" type="text" maxlength="60" placeholder="Trimite la descarcare"></div>
+<div class="inputContainer"><label class="inputLabel" for="RequestMovieAdminActionUrl">URL destinatie cu parametri</label>
+<input is="emby-input" id="RequestMovieAdminActionUrl" type="text" placeholder="https://exemplu.ro/adauga?imdb={imdbId}&amp;tmdb={tmdbId}"></div>
+<p>Variabile disponibile: <code>{title}</code>, <code>{year}</code>, <code>{tmdbId}</code>, <code>{imdbId}</code>, <code>{kind}</code>, <code>{requestId}</code>. Valorile sunt codificate automat pentru URL. Foloseste doar adrese http:// sau https://. Lasa URL-ul gol pentru a ascunde butonul. Butonul apare exclusiv administratorilor, la filme cu status In asteptare.</p>
+<button is="emby-button" type="submit" class="raised button-submit block emby-button"><span>Salveaza</span></button>
+<p>Formularul este inclus in plugin. <a href="#/configurationpage?name=RequestMoviePage">Deschide formularul de cereri</a>.</p>
+<p>Pentru afisare ca pagina in meniul principal pentru toti utilizatorii foloseste Plugin Pages 3.0+ sau extensia Custom Tabs. Nu folosi ruta veche <code>#!/requestmovie</code>.</p>
+</form></div>
+<script>
+(function(){
+const id="f8517621-7c60-4e19-9696-67f9b31fa092";
+const page=document.querySelector("#RequestMovieConfigPage");
+page.addEventListener("pageshow",function(){
+Dashboard.showLoadingMsg();
+ApiClient.getPluginConfiguration(id).then(function(c){
+page.querySelector("#RequestMovieTmdbKey").value=c.TmdbApiKey||"";
+page.querySelector("#RequestMovieAllow").checked=c.AllowRequests!==false;
+page.querySelector("#RequestMovieSearchLimit").value=c.SearchesPerUserPerHour||30;
+page.querySelector("#RequestMovieTvEnabled").checked=c.EnableTvRequestLibrary===true;
+page.querySelector("#RequestMovieTvPath").value=c.TvRequestLibraryPath||"";
+page.querySelector("#RequestMovieAdminActionLabel").value=c.AdminActionButtonLabel||"Deschide";
+page.querySelector("#RequestMovieAdminActionUrl").value=c.AdminActionUrlTemplate||"";
+Dashboard.hideLoadingMsg();
+});
+});
+page.querySelector("#RequestMovieConfigForm").addEventListener("submit",function(e){
+e.preventDefault();Dashboard.showLoadingMsg();
+ApiClient.getPluginConfiguration(id).then(function(c){
+c.TmdbApiKey=page.querySelector("#RequestMovieTmdbKey").value;
+c.AllowRequests=page.querySelector("#RequestMovieAllow").checked;
+c.SearchesPerUserPerHour=Math.max(1,Math.min(200,parseInt(page.querySelector("#RequestMovieSearchLimit").value,10)||30));
+c.EnableTvRequestLibrary=page.querySelector("#RequestMovieTvEnabled").checked;
+c.TvRequestLibraryPath=page.querySelector("#RequestMovieTvPath").value.trim();
+c.AdminActionButtonLabel=page.querySelector("#RequestMovieAdminActionLabel").value.trim()||"Deschide";
+c.AdminActionUrlTemplate=page.querySelector("#RequestMovieAdminActionUrl").value.trim();
+return ApiClient.updatePluginConfiguration(id,c);
+}).then(Dashboard.processPluginConfigurationUpdateResult);
+});
+})();
+</script></div></body></html>

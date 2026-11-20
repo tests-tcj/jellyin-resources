@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <AssemblyName>Jellyfin.Plugin.RequestMovie</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>14.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Jellyfin.Plugin.RequestMovie.Configuration.configPage.html" />
+    <None Remove="Jellyfin.Plugin.RequestMovie.Configuration.requestMoviePage.html" />
+    <None Remove="Jellyfin.Plugin.RequestMovie.Client.requestMovieUi.html" />
+    <None Remove="Jellyfin.Plugin.RequestMovie.Client.requestMovieNav.js" />
+    <EmbeddedResource Include="Jellyfin.Plugin.RequestMovie.Configuration.configPage.html" LogicalName="Jellyfin.Plugin.RequestMovie.Configuration.configPage.html" />
+    <EmbeddedResource Include="Jellyfin.Plugin.RequestMovie.Configuration.requestMoviePage.html" LogicalName="Jellyfin.Plugin.RequestMovie.Configuration.requestMoviePage.html" />
+    <EmbeddedResource Include="Jellyfin.Plugin.RequestMovie.Client.requestMovieUi.html" LogicalName="Jellyfin.Plugin.RequestMovie.Client.requestMovieUi.html" />
+    <EmbeddedResource Include="Jellyfin.Plugin.RequestMovie.Client.requestMovieNav.js" LogicalName="Jellyfin.Plugin.RequestMovie.Client.requestMovieNav.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MediaBrowser.Common" />
+    <Reference Include="MediaBrowser.Model" />
+    <Reference Include="MediaBrowser.Controller" />
+    <Reference Include="Jellyfin.Data" />
+  </ItemGroup>
+</Project>

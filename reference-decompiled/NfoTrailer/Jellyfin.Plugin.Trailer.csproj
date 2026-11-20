@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <AssemblyName>Jellyfin.Plugin.Trailer</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>14.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Jellyfin.Plugin.Trailer.Client.trailer.js" />
+    <EmbeddedResource Include="Jellyfin.Plugin.Trailer.Client.trailer.js" LogicalName="Jellyfin.Plugin.Trailer.Client.trailer.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MediaBrowser.Common" />
+    <Reference Include="MediaBrowser.Model" />
+    <Reference Include="MediaBrowser.Controller" />
+  </ItemGroup>
+</Project>
