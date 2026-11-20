@@ -1,0 +1,38 @@
+[
+  {
+    "guid": "f8517621-7c60-4e19-9696-67f9b31fa092",
+    "name": "Request Movie",
+    "description": "Jellyfin movie and series requests, TMDb search and duplicate checks.",
+    "overview": "Jellyfin movie and series requests, TMDb search and duplicate checks.",
+    "owner": "tests-tcj",
+    "category": "General",
+    "versions": [
+      {
+        "version": "0.1.1.1",
+        "changelog": "Reconstructed Jellyfin 12.4 plugin build",
+        "targetAbi": "12.4.0.0",
+        "sourceUrl": "https://github.com/tests-tcj/jellyin-resources/releases/download/plugins-v0.1.1.1/jellyfin-RequestMovie.zip",
+        "checksum": "29f24992a0bc8f5fad4fe4a378fe0a68",
+        "timestamp": "2026-11-20T23:06:20Z"
+      }
+    ]
+  },
+  {
+    "guid": "e30f17c1-cd72-4bdc-8225-38d122947719",
+    "name": "NFO Trailer",
+    "description": "Display trailers from local NFO metadata on Jellyfin movie details.",
+    "overview": "Display trailers from local NFO metadata on Jellyfin movie details.",
+    "owner": "tests-tcj",
+    "category": "General",
+    "versions": [
+      {
+        "version": "0.1.1.1",
+        "changelog": "Reconstructed Jellyfin 12.4 plugin build",
+        "targetAbi": "12.4.0.0",
+        "sourceUrl": "https://github.com/tests-tcj/jellyin-resources/releases/download/plugins-v0.1.1.1/jellyfin-Trailer.zip",
+        "checksum": "580d65611524582350dd8b14069c74ff",
+        "timestamp": "2026-11-20T23:06:20Z"
+      }
+    ]
+  }
+]
