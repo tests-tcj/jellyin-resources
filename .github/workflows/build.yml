@@ -1,0 +1,34 @@
+name: Build recovered Jellyfin plugins
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'custom-tab.html'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        plugin: [RequestMovie, Trailer]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Restore and compile
+        run: dotnet build src/Jellyfin.Plugin.${{ matrix.plugin }}/Jellyfin.Plugin.${{ matrix.plugin }}.csproj --configuration Release
+      - name: Package
+        run: |
+          mkdir -p dist
+          cp src/Jellyfin.Plugin.${{ matrix.plugin }}/bin/Release/net10.0/Jellyfin.Plugin.${{ matrix.plugin }}.dll dist/
+          (cd dist && zip -9 jellyfin-${{ matrix.plugin }}.zip Jellyfin.Plugin.${{ matrix.plugin }}.dll)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jellyfin-${{ matrix.plugin }}
+          path: dist/jellyfin-${{ matrix.plugin }}.zip
