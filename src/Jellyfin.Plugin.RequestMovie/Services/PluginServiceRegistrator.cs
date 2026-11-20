@@ -9,6 +9,8 @@ public sealed class PluginServiceRegistrator:IPluginServiceRegistrator {
   services.AddSingleton<RequestStore>();
   services.AddSingleton<LibraryChecks>();
   services.AddSingleton<SearchRateLimiter>();
+  services.AddSingleton<TvRequestLibrarySync>();
+  services.AddHostedService<RequestReconciliationService>();
   services.AddHttpClient("RequestMovie.Tmdb",c=>{c.BaseAddress=new Uri("https://api.themoviedb.org/3/");c.Timeout=TimeSpan.FromSeconds(12);});
  }
 }
