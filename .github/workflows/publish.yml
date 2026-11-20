@@ -1,0 +1,77 @@
+name: Publish Jellyfin plugin catalog
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'custom-tab.html'
+      - '.github/workflows/publish.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: jellyfin-catalog
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Set release version
+        id: version
+        shell: bash
+        run: |
+          echo "number=0.1.1.${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+          echo "tag=plugins-v0.1.1.${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+      - name: Build and package both plugins
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.number }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          for p in RequestMovie Trailer; do
+            dotnet restore "src/Jellyfin.Plugin.$p/Jellyfin.Plugin.$p.csproj"
+            dotnet build "src/Jellyfin.Plugin.$p/Jellyfin.Plugin.$p.csproj" \
+              --configuration Release --no-restore "-p:Version=$RELEASE_VERSION"
+            cp "src/Jellyfin.Plugin.$p/bin/Release/net10.0/Jellyfin.Plugin.$p.dll" dist/
+            (cd dist && zip -9 "jellyfin-$p.zip" "Jellyfin.Plugin.$p.dll")
+          done
+      - name: Publish binary release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          gh release create "$RELEASE_TAG" dist/jellyfin-RequestMovie.zip dist/jellyfin-Trailer.zip \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Jellyfin plugins $RELEASE_TAG" \
+            --notes "Recovered plugins for Jellyfin 12.4. Independently installable packages. Validate on a test server." \
+            --prerelease
+      - name: Generate repository catalog
+        env:
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+          RELEASE_VERSION: ${{ steps.version.outputs.number }}
+        run: |
+          python3 scripts/publish_manifest.py \
+            --manifest manifest.json --dist dist \
+            --repository "$GITHUB_REPOSITORY" \
+            --tag "$RELEASE_TAG" --version "$RELEASE_VERSION"
+          python3 -m json.tool manifest.json >/dev/null
+      - name: Commit manifest to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manifest.json
+          git commit -m "Update Jellyfin plugin catalog ${{ steps.version.outputs.number }}"
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then exit 0; fi
+          done
+          exit 1
