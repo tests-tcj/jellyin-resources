@@ -7,7 +7,7 @@ public sealed class RequestReconciliationService(RequestStore store,LibraryCheck
    try {
     var requests=store.List();
     store.MarkAvailable(library.FindAvailable(requests));
-    tv.Synchronize(store.List());
+    tv.Sync(store.List());
    }catch(Exception ex){logger.LogWarning(ex,"RequestMovie reconciliation failed");}
    try{await Task.Delay(TimeSpan.FromMinutes(10),stoppingToken);}catch(OperationCanceledException){break;}
   }
