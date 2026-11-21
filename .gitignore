@@ -1,6 +1,0 @@
-recovered/
-*.tar.gz
-.env
-*.user
-bin/
-obj/
