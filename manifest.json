@@ -8,6 +8,14 @@
     "category": "General",
     "versions": [
       {
+        "version": "0.1.2.12",
+        "changelog": "Reconstructed Jellyfin 12.4 plugin build",
+        "targetAbi": "12.4.0.0",
+        "sourceUrl": "https://github.com/tests-tcj/jellyin-resources/releases/download/plugins-v0.1.2.12/jellyfin-RequestMovie.zip",
+        "checksum": "983905f6225bb7be6367c458e1da7313",
+        "timestamp": "2026-11-22T19:16:35Z"
+      },
+      {
         "version": "0.1.2.10",
         "changelog": "Reconstructed Jellyfin 12.4 plugin build",
         "targetAbi": "12.4.0.0",
@@ -57,6 +65,14 @@
     "owner": "tests-tcj",
     "category": "General",
     "versions": [
+      {
+        "version": "0.1.2.12",
+        "changelog": "Reconstructed Jellyfin 12.4 plugin build",
+        "targetAbi": "12.4.0.0",
+        "sourceUrl": "https://github.com/tests-tcj/jellyin-resources/releases/download/plugins-v0.1.2.12/jellyfin-Trailer.zip",
+        "checksum": "222d498747abffed27d87652343ab69c",
+        "timestamp": "2026-11-22T19:16:35Z"
+      },
       {
         "version": "0.1.2.10",
         "changelog": "Reconstructed Jellyfin 12.4 plugin build",
